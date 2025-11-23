@@ -16,7 +16,7 @@ const Sidebar = () => {
     { name: 'Transactions', href: '/transactions', icon: FiCreditCard },
   
     { name: 'Settings', href: '/settings', icon: FiSettings },
-  ];
+  ];//
 
   return (
     <div className="hidden lg:flex lg:flex-shrink-0">
