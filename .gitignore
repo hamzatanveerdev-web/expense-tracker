@@ -1,0 +1,17 @@
+# ================================
+# Expense Tracker React App
+# ================================
+
+# Dependencies (CRITICAL - never commit these)
+node_modules/
+
+# Build outputs
+/build/
+/dist/
+
+# Environment configurations
+.env
+.env.local
+.env.development
+.env.production
+node_modules
