@@ -59,8 +59,11 @@ const Authentication = () => {
           email: formData.email,
           password: formData.password
         });
-        setMessage('Registration successful!');
-
+        toast.success('Login successful!');
+       setTimeout(() => {
+          window.location.href = '/login';
+        }, 1000);
+             
 
 
 
