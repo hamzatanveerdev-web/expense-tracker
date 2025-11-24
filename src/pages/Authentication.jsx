@@ -63,10 +63,6 @@ const Authentication = () => {
        setTimeout(() => {
           window.location.href = '/login';
         }, 1000);
-             
-
-
-
 
         console.log('Register response:', response.data);
       }
