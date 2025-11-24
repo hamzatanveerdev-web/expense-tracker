@@ -54,7 +54,7 @@ const Authentication = () => {
           return;
         }
 
-        const response = await axios.post(`${api_url}'/auth/register`, {
+        const response = await axios.post(`${api_url}/auth/register`, {
           name: formData.name,
           email: formData.email,
           password: formData.password
