@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { FiPlus, FiDownload, FiUpload, FiSearch } from 'react-icons/fi';
 import TransactionTable from '../components/transactions/TransactionTable';
 import ImportModal from '../components/transactions/ImportModal';
-import AddTransactionModal from '../components/transactions/NewTransactionModal'; // Import the modal
+import AddTransactionModal from '../components/transactions/NewTransactionModal';
 import toast, { Toaster } from 'react-hot-toast';
+import API from '../api';
 const Transactions = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -12,6 +13,7 @@ const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userid,setuserid]=useState("");
 
 const api_url=process.env.REACT_APP_API_BASE_URL;
 
@@ -28,25 +30,18 @@ const api_url=process.env.REACT_APP_API_BASE_URL;
   // Fetch transactions from backend
   const fetchTransactions = async () => {
     try {
-      setLoading(true);
-      const response = await fetch(`${api_url}/transactions`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch transactions');
-      }
-      
-      const data = await response.json();
-      setTransactions(data);
-      setError(null);
-    } catch (err) {
-      setError(err.message);
-      console.error('Error fetching transactions:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setLoading(true);
 
-  // Load transactions on component mount
+    const response = await API.get("/transactions");
+    setTransactions(response.data);
+    setError(null);
+  } catch (err) {
+    setError(err.message);
+    console.error("Error fetching transactions:", err);
+  } finally {
+    setLoading(false);
+  }
+  };
   useEffect(() => {
     fetchTransactions();
   }, []);
@@ -54,29 +49,32 @@ const api_url=process.env.REACT_APP_API_BASE_URL;
   // Add new transaction
   const handleAddTransaction = async (transactionData) => {
     try {
-      const response = await fetch(`${api_url}/transactions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(transactionData),
-      });
+    
+        const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?._id || user?.id;
 
-      if (!response.ok) {
-        throw new Error('Failed to add transaction');
-      }
+  if (!userId) {
+    toast.error("User ID missing. Please login again.");
+    return;
+  }
 
-      const newTransaction = await response.json();
-      
-      // Add to local state
-      setTransactions([newTransaction, ...transactions]);
-      setIsAddModalOpen(false);
-      toast.success('Successfully add Transaction!')
-    } catch (err) {
-      console.error('Error adding transaction:', err);
-      toast.error("Failed to add transaction")
-         }
-  };
+  const response = await API.post("/transactions", {
+    ...transactionData,
+    userId: userId
+  });
+
+
+    const newTransaction = response.data;
+
+    // Update local state
+    setTransactions([newTransaction, ...transactions]);
+    setIsAddModalOpen(false);
+    toast.success("Successfully added transaction!");
+  } catch (err) {
+    console.error("Error adding transaction:", err);
+    toast.error("Failed to add transaction");
+  }
+}
 
   // Export all transactions to CSV
   const handleExport = async () => {
@@ -118,55 +116,39 @@ const api_url=process.env.REACT_APP_API_BASE_URL;
   };
 
   const handleImport = async (importedData) => {
-    try {
-      const response = await fetch(`${api_url}/transactions/import`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ transactions: importedData }),
-      });
+   try {
+    // Axios automatically adds Authorization header and handles token refresh
+    const response = await API.post("/transactions/import", {
+      transactions: importedData,
+    });
 
-      if (!response.ok) {
-        throw new Error('Failed to import transactions');
-      }
+    const result = response.data;
 
-      const result = await response.json();
-      
-      // Refresh the transactions list
-      fetchTransactions();
-      setIsImportModalOpen(false);
-    
-      toast.success(`Successfully imported ${result.importedCount} transactions`);
-    } catch (err) {
-      console.error('Error importing transactions:', err);
-      toast.error('Failed to import transactions');
-    }
-  };
+    // Refresh transactions list
+    fetchTransactions();
+    setIsImportModalOpen(false);
 
+    toast.success(`Successfully imported ${result.importedCount} transactions`);
+  } catch (err) {
+    console.error("Error importing transactions:", err);
+    toast.error("Failed to import transactions");
+  }
+};
   const handleDeleteTransaction = async (id) => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
       try {
-        const response = await fetch(`${api_url}/transactions/${id}`, {
-          method: 'DELETE',
-        });
-     ///api/transactions
-        if (!response.ok) {
-          throw new Error('Failed to delete transaction');
-        }
+       await API.delete(`/transactions/${id}`);
 
-        // Remove from local state
-        setTransactions(transactions.filter(transaction => 
-          transaction.id !== id && transaction._id !== id
-        ));
-        
-      } catch (err) {
-        console.error('Error deleting transaction:', err);
-        toast.error('Failed to delete transaction');
-      }
-    }
+    // Remove from local state
+    setTransactions(transactions.filter(transaction => transaction.id !== id && transaction._id !== id));
+
+    toast.success("Transaction deleted successfully!");
+  } catch (err) {
+    console.error("Error deleting transaction:", err);
+    toast.error("Failed to delete transaction");
+  }
   };
-
+  }
   const filteredTransactions = transactions.filter(transaction => {
     if (searchTerm && !transaction.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
         !transaction.description.toLowerCase().includes(searchTerm.toLowerCase())) {

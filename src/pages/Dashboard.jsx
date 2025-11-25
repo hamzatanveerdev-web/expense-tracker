@@ -5,6 +5,7 @@ import { MdOutlineAccountBalanceWallet } from 'react-icons/md';
 import StatCard from '../components/dashboard/StatCard';
 import RecentTransactions from '../components/dashboard/RecentTransactions';
 import SpendingChart from '../components/dashboard/SpendingChart';
+import API from '../api';
 const api_url=process.env.REACT_APP_API_BASE_URL;
 const Dashboard = () => {
   const [stats, setStats] = useState([]);
@@ -23,8 +24,8 @@ const Dashboard = () => {
     const fetchDashboardStats = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${api_url}/transactions/dashboard/stats`);
-        const data = await response.json();
+        const response = await API.get(`/transactions/dashboard/stats`);
+       const data = response.data;
         
         setDashboardData(data);
         

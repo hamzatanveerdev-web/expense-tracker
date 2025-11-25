@@ -1,7 +1,7 @@
 // components/dashboard/RecentTransactions.js
 import React, { useState, useEffect } from 'react';
 import { FiArrowUpRight, FiArrowDownLeft } from 'react-icons/fi';
-
+import API from '../../api';
 const RecentTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ const RecentTransactions = () => {
     const fetchRecentTransactions = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${api_url}/transactions?limit=5`);
+        const response = await API.get(`/transactions?limit=5`);
         const data = await response.json();
         setTransactions(data);
       } catch (error) {
@@ -70,7 +70,7 @@ const RecentTransactions = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">Recent Transactions</h3>
-        </div>
+        </div> 
         <div className="space-y-4">
           {[...Array(4)].map((_, index) => (
             <div key={index} className="animate-pulse flex items-center justify-between p-3">
@@ -104,8 +104,8 @@ const RecentTransactions = () => {
       <div className="space-y-4">
         {transactions.length === 0 ? (
           <div className="text-center py-8">
-            <div className="text-4xl mb-2">💳</div>
-            <p className="text-gray-500 text-sm">No transactions yet</p>
+          
+            <p className="text-gray-500 text-sm">No Recent transactions</p>
           </div>
         ) : (
           transactions.map((transaction) => (

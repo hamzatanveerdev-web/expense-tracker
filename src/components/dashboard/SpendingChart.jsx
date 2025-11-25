@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FiPieChart } from 'react-icons/fi';
-
+import API from '../../api';
 const SpendingChart = () => {
   const [categories, setCategories] = useState([]);
 
@@ -18,9 +18,9 @@ const SpendingChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`${api_url}/transactions/dashboard/spending-by-category`);
-        const data = await res.json();
-        setCategories(data);
+        const res = await API.get(`/transactions/dashboard/spending-by-category`);
+        
+        setCategories(res);
       } catch (error) {
         console.error("Failed loading spending categories:", error);
       }
@@ -66,7 +66,7 @@ const SpendingChart = () => {
         {/* Legend */}
         <div className="space-y-3">
           {categories.length === 0 ? (
-            <p className="text-gray-500">Loading...</p>
+            <p className="text-gray-500">No transactions yet.</p>
           ) : (
             categories.map((category, index) => {
               const color = colors[index % colors.length];

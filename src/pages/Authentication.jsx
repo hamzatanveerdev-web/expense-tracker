@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
+
+import { useNavigate } from 'react-router-dom';
 const Authentication = () => {
   const api_url=process.env.REACT_APP_API_BASE_URL;
-
+  
+  const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -40,12 +43,10 @@ const Authentication = () => {
         });
         setMessage('Login successful!');
         toast.success('Login successful!');
-
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 1000);
+  localStorage.setItem('refreshToken', response.data.refreshToken);
+  localStorage.setItem('accessToken', response.data.accessToken);
+localStorage.setItem('user', JSON.stringify(response.data.user));
+navigate('/');
       } else {
         // Signup API call
         if (formData.password !== formData.confirmPassword) {

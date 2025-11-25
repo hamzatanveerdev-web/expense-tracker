@@ -1,41 +1,72 @@
 // components/layout/Navbar.js
-import React, { useEffect, useState } from 'react';
+
 import { FiBell, FiSearch, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import { MdOutlineAccountBalanceWallet } from 'react-icons/md';
-  import toast from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import { useRef, useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 const Navbar = () => {
+
+
+
+const profileRef = useRef(null);
+
+
+
+
+
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [userprofile, setuserprofile] = useState([]); // Use null instead of empty array
-const [firstnameletter ,setletter]=useState('');
-useEffect(() => {
-  const user = localStorage.getItem('user');
-  if (user) {
-    try {
-      const parsedUser = JSON.parse(user);
-      setuserprofile(parsedUser); 
-     //get first letter 
-   const firstTwoLetters = parsedUser.name ? parsedUser.name[0] : '';
-   setletter(firstTwoLetters)
-      console.log(firstTwoLetters);
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      setuserprofile(null);
+  const [firstnameletter, setletter] = useState('');
+  const navigate = useNavigate();
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        setuserprofile(parsedUser);
+        //get first letter 
+        const firstTwoLetters = parsedUser.name ? parsedUser.name[0] : '';
+        setletter(firstTwoLetters)
+        console.log(firstTwoLetters);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        setuserprofile(null);
+      }
     }
-  }
+  }, []);
+
+
+
+
+
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (profileRef.current && !profileRef.current.contains(event.target)) {
+      setIsProfileOpen(false); // close dropdown if click outside
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
 }, []);
 
 
-const logoutuser = () => {
-  // Clear localStorage
-  localStorage.removeItem('user');
-  localStorage.removeItem('token');
-  
-  toast.success(userprofile.name+' Logout successfully');
-setTimeout(() => {
-  window.location.href = '/login';
-}, 1000);
- 
-}
+
+  const logoutuser = () => {
+    // Clear localStorage
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+
+    toast.success(userprofile.name + ' Logout successfully');
+    setTimeout(() => {
+      window.location.href = '/login';
+    }, 1000);
+
+  }
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between px-6 py-4">
@@ -66,7 +97,7 @@ setTimeout(() => {
           </button>
 
           {/* Profile Dropdown */}
-          <div className="relative">
+          <div ref={profileRef} className="relative">
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -82,21 +113,43 @@ setTimeout(() => {
 
             {isProfileOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
-                <button className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                <button
+                  className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  onClick={() => {
+                    navigate('/profile');   // or your profile page
+                    setIsProfileOpen(false); // close dropdown
+                  }}
+                >
                   <FiUser className="h-4 w-4" />
                   <span>Profile</span>
                 </button>
-                <button className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+
+                <button
+                  className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  onClick={() => {
+                    navigate('/settings');
+                    setIsProfileOpen(false);
+                  }}
+                >
                   <FiSettings className="h-4 w-4" />
                   <span>Settings</span>
                 </button>
+
                 <div className="border-t border-gray-200 my-1"></div>
-                <button onClick={logoutuser}  className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-50">
+
+                <button
+                  onClick={() => {
+                    logoutuser();
+                    setIsProfileOpen(false); // optional, though usually the page changes
+                  }}
+                  className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                >
                   <FiLogOut className="h-4 w-4" />
-                    <span >Sign Out</span>
+                  <span>Sign Out</span>
                 </button>
               </div>
             )}
+
           </div>
         </div>
       </div>
