@@ -12,9 +12,9 @@ const RecentTransactions = () => {
       try {
         setLoading(true);
         const response = await API.get(`/transactions?limit=5`);
-        const data = await response.json();
-        setTransactions(data);
-      } catch (error) {
+      
+        setTransactions(response.data);
+      } catch (error) { 
         console.error('Error fetching recent transactions:', error);
       } finally {
         setLoading(false);

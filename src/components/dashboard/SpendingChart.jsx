@@ -18,15 +18,15 @@ const SpendingChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+     
         const res = await API.get(`/transactions/dashboard/spending-by-category`);
-        
-        setCategories(res);
+        setCategories(res.data);
       } catch (error) {
         console.error("Failed loading spending categories:", error);
       }
     };
 
-    fetchData();
+fetchData();
   }, []);
 
   return (

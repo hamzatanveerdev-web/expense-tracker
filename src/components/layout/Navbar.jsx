@@ -1,6 +1,6 @@
 // components/layout/Navbar.js
 
-import { FiBell, FiSearch, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FiBell,FiPlusCircle, FiSearch, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import { MdOutlineAccountBalanceWallet } from 'react-icons/md';
 import toast from 'react-hot-toast';
 import { useRef, useEffect, useState } from "react";
@@ -133,6 +133,19 @@ const profileRef = useRef(null);
                 >
                   <FiSettings className="h-4 w-4" />
                   <span>Settings</span>
+                </button>
+
+
+
+                 <button
+                  className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  onClick={() => {
+                    navigate('/transactions');
+                    setIsProfileOpen(false);
+                  }}
+                >
+                  <FiPlusCircle className="h-4 w-4" />
+                  <span>Add transaction</span>
                 </button>
 
                 <div className="border-t border-gray-200 my-1"></div>

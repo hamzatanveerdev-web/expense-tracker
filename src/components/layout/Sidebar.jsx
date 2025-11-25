@@ -28,7 +28,7 @@ const Sidebar = () => {
               <FiCreditCard className="h-5 w-5 text-white" />
             </div>
        <span className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900">
-  Brainscraft FinTrack
+   FinTrack
 </span>
 
 

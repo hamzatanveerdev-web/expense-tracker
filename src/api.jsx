@@ -26,14 +26,16 @@ const processQueue = (error, token = null) => {
 // ------------------------
 // Add Access Token to Every Request
 // ------------------------
+
 API.interceptors.request.use(config => {
   const accessToken = localStorage.getItem("accessToken");
+
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
-  return config;
-});
 
+  return config; // Always return config, even if token is missing
+});
 // ------------------------
 // Response Interceptor
 // ------------------------
@@ -43,25 +45,22 @@ API.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      // 1. Check if token is being refreshed
       if (isRefreshing) {
-        // Queue this request until token is refreshed
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         }).then(token => {
           originalRequest.headers.Authorization = `Bearer ${token}`;
           return API(originalRequest);
-        }).catch(err => Promise.reject(err));
+        });
       }
 
-      originalRequest._retry = true;
       isRefreshing = true;
-
       try {
         const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) {
-          forceLogout();
-          return Promise.reject(error);
-        }
+        if (!refreshToken) throw new Error("No refresh token");
 
         const res = await axios.post(`${API.defaults.baseURL}/auth/refresh-token`, { refreshToken });
         const newToken = res.data.accessToken;
@@ -70,10 +69,10 @@ API.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         processQueue(null, newToken);
 
-        return API(originalRequest);
+        return API(originalRequest); // Retry original request with new token
       } catch (err) {
         processQueue(err, null);
-        forceLogout();
+        forceLogout(); // If refresh fails, logout
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
