@@ -1,7 +1,6 @@
 // components/transactions/AddTransactionModal.js
 import React, { useState } from 'react';
 import { FiX, FiSave, FiCalendar, FiDollarSign, FiTag } from 'react-icons/fi';
-import toast, { Toaster } from 'react-hot-toast';
 
 const NewTransactionModal = ({ isOpen, onClose, onSave }) => {
   const [formData, setFormData] = useState({

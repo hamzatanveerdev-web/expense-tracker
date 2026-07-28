@@ -4,10 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { 
   FiHome, 
   FiCreditCard, 
-  FiPieChart, 
-  FiFolder, 
-  FiSettings,
-  FiPlusCircle
+  FiSettings
 } from 'react-icons/fi';
 
 const Sidebar = () => {
@@ -55,14 +52,6 @@ const Sidebar = () => {
                 {item.name}
               </NavLink>
             ))}
-          </div>
-
-          {/* Add Transaction Button */}
-          <div className="px-4 mt-8">
-            <button className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-              <FiPlusCircle className="h-5 w-5" />
-              <span>New Transaction</span>
-            </button>
           </div>
         </nav>
       </div>

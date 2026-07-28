@@ -1,6 +1,6 @@
 // src/components/transactions/TransactionTable.js - Updated with Add Transaction
 import React, { useState } from 'react';
-import { FiEdit, FiTrash2, FiEye, FiChevronDown, FiChevronUp, FiDownload, FiPlus } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiEye, FiChevronDown, FiChevronUp, FiDownload } from 'react-icons/fi';
 import AddTransactionModal from './NewTransactionModal'; // Import the modal
 
 const TransactionTable = ({ transactions, onDelete, onEdit, searchTerm, onExport, onAddTransaction }) => {

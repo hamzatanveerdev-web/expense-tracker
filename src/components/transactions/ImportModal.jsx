@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { FiX, FiUpload, FiDownload } from 'react-icons/fi';
 
 const ImportModal = ({ isOpen, onClose, onImport }) => {
-  const [importData, setImportData] = useState('');
   const [importType, setImportType] = useState('csv');
   const [previewData, setPreviewData] = useState([]);
 
@@ -12,7 +11,6 @@ const ImportModal = ({ isOpen, onClose, onImport }) => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setImportData(e.target.result);
         parseCSVData(e.target.result);
       };
       reader.readAsText(file);
@@ -21,7 +19,6 @@ const ImportModal = ({ isOpen, onClose, onImport }) => {
 
   const parseCSVData = (csvText) => {
     const lines = csvText.split('\n').filter(line => line.trim());
-    const headers = lines[0].split(',').map(header => header.trim());
     
     const parsedData = lines.slice(1).map((line, index) => {
       const values = line.split(',').map(value => value.trim());
@@ -44,7 +41,6 @@ const ImportModal = ({ isOpen, onClose, onImport }) => {
     if (previewData.length > 0) {
       onImport(previewData);
       onClose();
-      setImportData('');
       setPreviewData([]);
     }
   };

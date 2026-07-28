@@ -5,7 +5,6 @@ import API from '../../api';
 const RecentTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
-    const api_url=process.env.REACT_APP_API_BASE_URL;
   // Fetch recent transactions from backend
   useEffect(() => {
     const fetchRecentTransactions = async () => {

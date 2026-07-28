@@ -14,7 +14,6 @@ const SpendingChart = () => {
     "bg-red-500",
     "bg-teal-500"
   ];
-    const api_url=process.env.REACT_APP_API_BASE_URL;
   useEffect(() => {
     const fetchData = async () => {
       try {

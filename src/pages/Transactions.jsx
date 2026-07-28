@@ -4,7 +4,7 @@ import { FiPlus, FiDownload, FiUpload, FiSearch } from 'react-icons/fi';
 import TransactionTable from '../components/transactions/TransactionTable';
 import ImportModal from '../components/transactions/ImportModal';
 import AddTransactionModal from '../components/transactions/NewTransactionModal';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import API from '../api';
 const Transactions = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,10 +12,6 @@ const Transactions = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false); // Add this state
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [userid,setuserid]=useState("");
-
-const api_url=process.env.REACT_APP_API_BASE_URL;
 
 
 
@@ -34,9 +30,7 @@ const api_url=process.env.REACT_APP_API_BASE_URL;
 
     const response = await API.get("/transactions");
     setTransactions(response.data);
-    setError(null);
   } catch (err) {
-    setError(err.message);
     console.error("Error fetching transactions:", err);
   } finally {
     setLoading(false);
@@ -49,7 +43,6 @@ const api_url=process.env.REACT_APP_API_BASE_URL;
   // Add new transaction
   const handleAddTransaction = async (transactionData) => {
     try {
-    
         const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?._id || user?.id;
 
@@ -62,7 +55,6 @@ const api_url=process.env.REACT_APP_API_BASE_URL;
     ...transactionData,
     userId: userId
   });
-
 
     const newTransaction = response.data;
 

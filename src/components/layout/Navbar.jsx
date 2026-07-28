@@ -84,18 +84,6 @@ const profileRef = useRef(null);
 
         {/* Right Section */}
         <div className="flex items-center space-x-0.5">
-          {/* Wallet Balance */}
-          <div className="hidden md:flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-lg">
-            <MdOutlineAccountBalanceWallet className="h-5 w-5 text-blue-600" />
-            <span className="text-sm font-semibold text-blue-800">$12,458.00</span>
-          </div>
-
-          {/* Notifications */}
-          <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
-            <FiBell className="h-5 w-5" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-          </button>
-
           {/* Profile Dropdown */}
           <div ref={profileRef} className="relative">
             <button

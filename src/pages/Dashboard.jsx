@@ -1,12 +1,11 @@
 // pages/Dashboard.js - FULLY DYNAMIC
 import React, { useState, useEffect } from 'react';
-import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiActivity } from 'react-icons/fi';
+import { FiTrendingUp, FiTrendingDown, FiActivity } from 'react-icons/fi';
 import { MdOutlineAccountBalanceWallet } from 'react-icons/md';
 import StatCard from '../components/dashboard/StatCard';
 import RecentTransactions from '../components/dashboard/RecentTransactions';
 import SpendingChart from '../components/dashboard/SpendingChart';
 import API from '../api';
-const api_url=process.env.REACT_APP_API_BASE_URL;
 const Dashboard = () => {
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,9 +14,9 @@ const Dashboard = () => {
   useEffect(() => {
     const user = localStorage.getItem('user');
     if (!user) {
-      window.location.href = '/';
+      window.location.href = '/login';
+      return;
     }
-    
  },[])
   // Fetch dashboard stats from backend
   useEffect(() => {

@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Create Axios Instance
 const API = axios.create({
-  baseURL: `${process.env.REACT_APP_API_BASE_URL}`,
+  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api',
 });
 
 // ------------------------
@@ -21,6 +21,22 @@ const processQueue = (error, token = null) => {
     }
   });
   failedQueue = [];
+};
+
+// ------------------------
+// Authentication Helper Functions
+// ------------------------
+export const isAuthenticated = () => {
+  const accessToken = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
+  return !!(accessToken && refreshToken);
+};
+
+export const logout = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("user");
+  window.location.href = "/login";
 };
 
 // ------------------------
@@ -60,17 +76,32 @@ API.interceptors.response.use(
       isRefreshing = true;
       try {
         const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) throw new Error("No refresh token");
+        if (!refreshToken) {
+          throw new Error("No refresh token available");
+        }
 
         const res = await axios.post(`${API.defaults.baseURL}/auth/refresh-token`, { refreshToken });
+        
+        if (!res.data || !res.data.accessToken) {
+          throw new Error("Invalid refresh token response");
+        }
+        
         const newToken = res.data.accessToken;
+        const newRefreshToken = res.data.refreshToken;
+        
         localStorage.setItem("accessToken", newToken);
+        
+        // Update refresh token if provided by backend
+        if (newRefreshToken) {
+          localStorage.setItem("refreshToken", newRefreshToken);
+        }
 
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         processQueue(null, newToken);
 
         return API(originalRequest); // Retry original request with new token
       } catch (err) {
+        console.error("Token refresh failed:", err);
         processQueue(err, null);
         forceLogout(); // If refresh fails, logout
         return Promise.reject(err);
@@ -89,6 +120,7 @@ API.interceptors.response.use(
 function forceLogout() {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
+  localStorage.removeItem("user");
   window.location.href = "/login";
 }
 

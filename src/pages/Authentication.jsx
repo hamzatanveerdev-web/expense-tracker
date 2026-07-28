@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import API from '../api';
 
 import { useNavigate } from 'react-router-dom';
 const Authentication = () => {
-  const api_url=process.env.REACT_APP_API_BASE_URL;
-  
   const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useState(true);
@@ -36,8 +34,7 @@ const Authentication = () => {
     try {
       if (isLogin) {
         // Login API call
-        console.log(api_url)
-        const response = await axios.post(`${api_url}/auth/login`, {
+        const response = await API.post('/auth/login', {
           email: formData.email,
           password: formData.password
         });
@@ -55,16 +52,15 @@ navigate('/');
           return;
         }
 
-        const response = await axios.post(`${api_url}/auth/register`, {
+        const response = await API.post('/auth/register', {
           name: formData.name,
           email: formData.email,
           password: formData.password
         });
-        toast.success('Login successful!');
+        toast.success('Registration successful! Please login.');
        setTimeout(() => {
           window.location.href = '/login';
         }, 1000);
-//this is a test 
         console.log('Register response:', response.data);
       }
     } catch (error) {
