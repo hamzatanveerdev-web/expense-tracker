@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Create Axios Instance
 const API = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'https://expencetracker-backend.vercel.app/api',
+  baseURL: process.env.REACT_APP_API_BASE_URL ||'https://expencetracker-backend.vercel.app/api',
 });
 
 // ------------------------
@@ -24,7 +24,7 @@ const processQueue = (error, token = null) => {
 };
 
 // ------------------------
-// Authentication Helper Functions
+// Authentication Helper Function
 // ------------------------
 export const isAuthenticated = () => {
   const accessToken = localStorage.getItem("accessToken");
