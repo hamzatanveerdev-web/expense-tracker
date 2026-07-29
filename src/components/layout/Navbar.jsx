@@ -1,7 +1,6 @@
 // components/layout/Navbar.js
 
-import { FiBell,FiPlusCircle, FiSearch, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
-import { MdOutlineAccountBalanceWallet } from 'react-icons/md';
+import { FiPlusCircle, FiSearch, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { useRef, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
